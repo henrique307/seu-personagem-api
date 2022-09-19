@@ -1,44 +1,45 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import JogadoresModel from './jogadores.model';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import Jogador from './jogadores.model';
+import JogadoresService from './jogadores.service';
 import PersonagemModel from './personagem.model';
 
 @Controller('jogadores')
 export default class JogadoresController {
-    jogadores:Array<JogadoresModel> = [
-      new JogadoresModel('Henrique'),
-      new JogadoresModel('Mikaelly'),
-      new JogadoresModel('Leo')
-    ];
+  constructor(private JogadoresService: JogadoresService) {}
 
   @Get()
-  get_Jogadores():JogadoresModel[] {
-    return this.jogadores;
+  async get_Jogadores(): Promise<Jogador[]> {
+    return this.JogadoresService.pegaTodos();
   }
 
   @Get(':id')
-  get_Jogador_id(@Param() params):JogadoresModel {
-    return this.jogadores[params.id];
+  async get_Jogador_id(@Param() params): Promise<Jogador> {
+    return this.JogadoresService.pegaUm(params.id);
   }
 
   @Post()
-  post_jogaodr(@Body() jogador:any){
-    this.jogadores.push(new JogadoresModel(jogador.nome))
-    return this.jogadores
+  async post_jogador(@Body() jogador: Jogador): Promise<Jogador[]> {
+    this.JogadoresService.criaJogador(jogador);
+    return await this.get_Jogadores();
   }
 
-  @Put(':id')
-  put_jogador(@Body() jogador: any, @Param() params:any){
-    for (let key in jogador) {
-      this.jogadores[params.id][key] = jogador[key]
-    }
-
-    return this.jogadores
+  @Put()
+  async put_jogador(@Body() jogador: Jogador): Promise<Jogador[]> {
+    this.JogadoresService.mudaJogador(jogador);
+    return await this.get_Jogadores();
   }
 
   @Delete(':id')
-  delete_jogador(@Param() params) {
-    this.jogadores.splice(params.id, 1)
-    return this.jogadores
+  async delete_jogador(@Param() params): Promise<Jogador[]> {
+    this.JogadoresService.deletaConta(params.id);
+    return this.get_Jogadores();
   }
-
 }

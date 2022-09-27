@@ -3,9 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import JogadoresController from './jogadores.controller';
-import Jogador from './jogadores.model';
-import JogadoresService from './jogadores.service';
+import { usuarioController } from './usuario/usuario.controller';
+import { UsuarioModel } from './usuario/usuario.model';
+import { usuarioService } from './usuario/usuario.service';
 
 
 @Module({
@@ -20,9 +20,9 @@ import JogadoresService from './jogadores.service';
       database: 'seu_personagem',
       autoLoadModels:true,
       synchronize: true
-    }),SequelizeModule.forFeature([Jogador])
+    }),SequelizeModule.forFeature([UsuarioModel])
   ],
-  controllers: [AppController, JogadoresController],
-  providers: [AppService, JogadoresService],
+  controllers: [AppController, usuarioController],
+  providers: [AppService, usuarioService],
 })
 export class AppModule {}
